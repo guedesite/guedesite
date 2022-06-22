@@ -1,0 +1,506 @@
+<h1><strong><u>Vid&eacute;o pr&eacute;sentation Osaka:</u></strong></h1>
+<p>Pour la r&eacute;alisation de la vid&eacute;o, nous avons d&eacute;cid&eacute; d'expliquer une notion que nous avons mis du temps &agrave; comprendre et que nous aurions voulu comprendre plustot qui est les redirections de port en local et plus particuli&egrave;rement sur Thorin.</p>
+<p>Dans la premi&egrave;re partie nous pr&eacute;senterons le fonctionnement de thorin en Panama s'en rentrez dans les d&eacute;tails, expliqu&eacute; aussi l'IPV6 sur Bifrost.</p>
+<p>Dans une seconde partie nous pr&eacute;senterons en d&eacute;tail le concept de redirection de port et qu'est-ce qui se passe r&eacute;ellement derri&egrave;re.</p>
+<p>En dernier, nous mettrons en route nos machines pour visualiser le fonctionnement de notre r&eacute;seau depuis chez nous.</p>
+<p>[https://www.youtube.com/watch?v=j6xCXg-ldo0 Vid&eacute;o Sur Youtube]</p>
+<ul>
+<li>Producteur: Hugo Mathieu</li>
+<li>Cadreur: K&eacute;nan Meylan</li>
+<li>Acteurs: Dorian Saint-Martin, Baptiste Maresic</li>
+<li>Voix: Hugo Mathieu, K&eacute;nan Meylan</li>
+<li>Montage: Hugo Mathieu</li>
+</ul>
+<p><u>Vid&eacute;o Libre de Diffusion</u></p>
+<h1><strong><u>Projet Int&eacute;gratif</u></strong></h1>
+<p>coming soon</p>
+<h1><strong><u>Connection Bifrost en IPV4:</u></strong></h1>
+<p>Bifrost demande une connexion en IPV6 obligatoire, l'activation de cette IP par notre op&eacute;rateur peut &ecirc;tre difficile et certains r&eacute;seaux (Crous par exemple ...) n'offre pas cette possibilit&eacute;.</p>
+<p>Pr&eacute;requis:</p>
+<ul>
+<li>Une rasberry avec un linux install&eacute; dans un r&eacute;seau avec IPV6</li>
+<li>Ouvrir un port ext&eacute;rieur vers le port 22 de la rasberry (exemple: 46006 -&gt; 22)&nbsp;</li>
+</ul>
+<p>Shell 1:</p>
+<pre>ssh &lt;user_rasberry&gt;@&lt;ip&gt; -p &lt;port_exterieur&gt; -L 3322:[2001:660:5402:2fe:baac:6fff:fe7f:4223]:8163</pre>
+<p>Shell 2:</p>
+<pre>ssh &lt;user_bifrost&gt;@localhost -p 3322 -L 2222:thorin:22 -L 8080:thorin:80 -L &lt;id+5900&gt;:thorin:&lt;id+5900&gt;-L &lt;id+6000&gt;:thorin:&lt;id+6000&gt;-L &lt;id+6100&gt;:thorin:&lt;id+6100&gt;</pre>
+<p>Shell 3:</p>
+<pre>ssh &lt;user_thorin&gt;@localhost -p 2222</pre>
+<p>Dans un navigateur:</p>
+<pre>http://localhost:8080/mediawiki</pre>
+<p>Lancer une KVM:<br /></p>
+<ul>
+<li>Installer realvnc</li>
+<li>Ajouter au path le dossier du programme</li>
+<li>Lancer une marchine virtuelle sur thorin (disons qu'on lance -vnc:237)</li>
+</ul>
+<p>Shell 4:</p>
+<pre>vncviewer localhost:6137 -&gt; (5900+237)</pre>
+<h1><strong><u>Base des Services R&eacute;seaux</u></strong></h1>
+<h2><strong>3.1.1&emsp;Objectifs</strong></h2>
+<p>Le but du module consiste &agrave; mettre en place un petit r&eacute;seau d&rsquo;entreprise. Pour cela un fournisseur d&rsquo;acc&egrave;s fournit une plage de 255 adresses IP, un acc&egrave;s internet. L&rsquo;&eacute;tudiant doit mettre en place&nbsp;:</p>
+<ul>
+<li>Une machine virtuelle, serveur DHCP</li>
+<li>Au moins une autre machine virtuelle, serveur wordpress</li>
+<li>Un serveur DNS</li>
+<li>le partage de fichiers entre deux machines (NFS, sshfs, samba, webdav)</li>
+<li>Sauvegarde, restauration</li>
+<li>Supervision</li>
+</ul>
+<p>Ce r&eacute;seau sera utilis&eacute; dans le module de t&eacute;l&eacute;phonie pour mettre en place le serveur de t&eacute;l&eacute;phonie.</p>
+<h2><strong>3.1.4.1 Connexion Thorin, identification des param&egrave;tres</strong></h2>
+<h3>1. connexion sans mot de passe vers Thorin </h3>
+<pre>ssh-keygen
+cat .ssh/id_rsa.pub | ssh mathieu@thorin "mkdir -p .ssh &amp;&amp; cat &gt;&gt; .ssh/authorized_keys"</pre>
+<h3>2. liste des adresses dans le Wiki</h3>
+<p>[[Fichier:schemaaddr.png]]</p>
+<h3>3. liste des ports VNC utilis&eacute;s</h3>
+<pre>nmap 10.4.37.1 | grep vnc</pre>
+<p>Port vnc: 5937, 6037, 6137 ...</p>
+<h3>4. xlogo</h3>
+<pre>ssh mathieu@thorin -X
+xlogo</pre>
+<h3>5. aﬀichage des compteurs</h3>
+<pre>lsblk # Afficher les p&eacute;riph&eacute;riques bloc</pre>
+<pre>pwd # Afficher le chemin d'acc&egrave;s vers le r&eacute;pertoire o&ugrave; se situe l'utilisateur</pre>
+<pre>df -h # Quantit&eacute; d'espace disque disponible sur chaque disque mont&eacute;</pre>
+<pre>du -ah # Obtenir une estimation de l'espace que nos fichiers ou un r&eacute;pertoires prend sur le disque </pre>
+<pre>free -h # Afficher des informations de disponibilit&eacute; sur la m&eacute;moire vive du syst&egrave;me</pre>
+<pre>cat /proc/cpuinfo # Obtenir les informations processeur </pre>
+<pre>uptime # Indiquer depuis combien de temps le syst&egrave;me fonctionne</pre>
+<p>kvm -m 2G -hda debian-Hugo-Mathieu.qcow2 -net nic,macaddr=42:24:42:24:42:24 -net vde,sock=/var/run/vde2/kvmstud7037.ctl -vnc :37 -nographic vinagre thorin:37</p>
+<h2><strong>3.1.4.2 Router sur Thorin</strong></h2>
+<h3>1. Installation d'un serveur sur Thorin</h3>
+<p>V&eacute;rification de l'architecture de thorin: </p>
+<pre>dpkg --print-architecture -&gt; Amd64</pre>
+<p>T&eacute;l&eacute;chargement de l'image debian: </p>
+<pre>wget https://ftp.crifo.org/debian-cd/11.3.0/amd64/iso-cd/debian-11.3.0-amd64-netinst.iso</pre>
+<p>Cr&eacute;ation du disque: </p>
+<pre>qemu-img create -f qcow2 router-mathieu.qcow2 15G</pre>
+<p>Premier lancement pour installation: </p>
+<pre>kvm -m 2G -hda router-mathieu.qcow2 -cdrom iso/debian-11.3.0-amd64-netinst.iso </pre>
+<h3>2. Utilisation de deux interfaces r&eacute;seaux</h3>
+<p>Lancement du routeur avec deux interfaces r&eacute;seaux:</p>
+<pre>kvm -m 2G -hda router-mathieu.qcow2 -net nic, macaddr=42:03:00:25:03:00 -net vde,sock=/var/run/vde2/kvmstud7037.ctl -net nic,macaddr=42:03:00:25:03:01 -net vde,sock=/var/run/vde2/kvmstudPriv7037.ctl</pre>
+<h3>3. Utilisation de VNC</h3>
+<p>Lancement du routeur avec deux interfaces sur Thorin avec port VNC, ici 37:</p>
+<pre>kvm -m 2G -hda router-mathieu.qcow2 -net nic, macaddr=42:03:00:25:03:00 -net vde,sock=/var/run/vde2/kvmstud7037.ctl -net nic,macaddr=42:03:00:25:03:01 -net vde,sock=/var/run/vde2/kvmstudPriv7037.ctl -vnc :37 -nographic</pre>
+<p>Et pour acc&eacute;der &agrave; la machine:</p>
+<pre>vinagre thorin:37</pre>
+<h3>4. Affectation des adresses IP</h3>
+<p>Configuration des interfaces sur le routeur:</p>
+<pre>sudo nano /etc/network/interfaces</pre>
+<pre>allow-hotplug ens3
+ iface ens3 inet static
+ address 10.4.37.10/24
+ gateway 10.4.37.1
+allow-hotplug ens4
+ iface ens4 inet static
+ address 10.144.37.2/24</pre>
+<p>Puis afin de permettre a nos futurs ping du r&eacute;seau interne de sortir de notre r&eacute;seau on fait:</p>
+<pre>sudo sysctl -w net.ipv4.ip_forward=1</pre>
+<h3>5. Avec tshark, pouver que le r&eacute;seau priv&eacute; est accessible</h3>
+<p>On fait un ping sur le r&eacute;seau priv&eacute;:</p>
+<pre>ping 10.144.37.2
+</pre>
+<p>Pour ensuite lancer tshark dans un autre terminal:</p>
+<pre>tshark -n -i ens4</pre>
+<h3>6. r&eacute;cup&eacute;ration du disque dur avec kpartx</h3>
+<p>Pour convertir l'image:</p>
+<pre>qemu-img convert -O raw router-mathieu.qcow2 router-mathieu.raw</pre>
+<h3>7.Montage avec kpartx:</h3>
+<pre>kpartx -av router-mathieu.raw</pre>
+<pre>mount /dev/mapper/loop0p1 /tmpmount</pre>
+<p>La machine est maintenant disponible dans /tmpmount.</p>
+<p>Effectu&eacute; l'inverse:</p>
+<pre>umount /tmpmount</pre>
+<pre>qemu-img convert -O qcow2 router-mathieu.qcow2 router-mathieu.raw</pre>
+<h2><strong>3.1.4.3 Apache, Asterisk</strong></h2>
+<p>On cr&eacute;er une VM pour le serveur Apache et une VM pour le serveur Asterisk. Ces deux VM n'ont que la carte r&eacute;seau kvmstudPriv7037 puisqu'elle se trouve dans le r&eacute;seau priv&eacute;.</p>
+<h3>1. On install dnsmasq:</h3>
+<pre>sudo apt install dnsmasq</pre>
+<h3>2. Configuration DHCP:</h3>
+<p>Edition du fichier /etc/dnsmasq.conf:</p>
+<pre>dhcp-range=10.144.37.3,10.144.37.254,255.255.255.0,24H</pre>
+<p>Cr&eacute;er un pool d'adresse allant de 10.144.37.3 &agrave; 10.144.37.254 avec un masque /24, les adresses sont expires en 24 heurs.</p>
+<h3>3. Adresses fixe pour les clients</h3>
+<p>Toujours dans /etc/dnsmasq.conf:</p>
+<pre>dhcp-host=42:37:37:37:37:1,Asterisk,10.144.37.10,infinite</pre>
+<pre>dhcp-host=42:37:37:37:37:2,Apache,10.144.37.10,infinite</pre>
+<h3>4. D&eacute;finitions des noms:</h3>
+<p>Edition de /etc/hosts, exemple:</p>
+<pre>10.144.37.2 router</pre>
+<h3>5. V&eacute;rifier l'installation avec tshark sur le routeur</h3>
+<pre>tshark -i ens4 -f "port 67 and port 68"</pre>
+<h2><strong>3.1.4.7 Recherche de pannes</strong></h2>
+<h3>Connexion telnet:</h3>
+<p>tshark sur le routeur:</p>
+<pre>tshark -i ens4 -f "port 80"</pre>
+<p>telnet sur la machine d'Osaka vers notre serveur apache sur le port http:</p>
+<pre>telnet 10.144.37.20 80</pre>
+<h3>Ev&eacute;nement dans un fichier de logs:</h3>
+<p>Afficher le contenue du fichier sur le serveur apache:</p>
+<pre>less /var/log/syslog </pre>
+<p>On peut cr&eacute;er un &eacute;v&eacute;nement en redemandant une IP &agrave; notre routeur:</p>
+<pre>dhclient</pre>
+<p>Et reafficher le fichier de logs pour voir les nouvelles entr&eacute;es.</p>
+<h3>Nmap et SS</h3>
+<p>Observer les ports TCP ouverts de notre serveur apache sur le routeur:</p>
+<pre>nmap -sT 10.144.37.20</pre>
+<p>Et pour retrouver ces ports TCP sur notre serveur apache:</p>
+<h2><strong>3.1.4.8 Supervision</strong></h2>
+<h3>1. Installer les packets</h3>
+<p>Purger la BDD si besoin</p>
+<pre>mysql_secure_installation</pre>
+<p>Commen&ccedil;ons par installer les paquets n&eacute;cessaire:</p>
+<pre>apt install icinga2n libapache2-mod-php icinga2-ido-mysql phpmyadmin icingaweb2</pre>
+<p>L'installation de icinga2-ido-mysql et phpmyadmin demande d'enregistr&eacute; un mot de passe, ici '1234' pour l'environnement de test, en condition r&eacute;el il est pr&eacute;f&eacute;rable de mettre un mot de passe fort.</p>
+<p>On active ensuite ido-mysql:</p>
+<pre>icinga2 feature enable ido-mysql</pre>
+<p>On red&eacute;marre le service icinga2 comme conseilli&eacute; par la commande pr&eacute;c&eacute;dente:</p>
+<pre>systemctl restart icinga2</pre>
+<p>On active le module rewrite d'apache2:</p>
+<pre>a2enmod rewrite</pre>
+<p>Dans le fichier php.ini (/etc/php/7.0/apache2/php.ini) on modifie la valeur de la ligne date.timezone:</p>
+<pre>date.timezone = "Europe/Paris"</pre>
+<p>Et on red&eacute;marre le service apache2:</p>
+<pre>systemctl restart apache2</pre>
+<h3>2. Installation d'Icinga</h3>
+<p>On cr&eacute;er une base de donn&eacute;e sur mariadb pour Icinga:</p>
+<pre>mariadb -u root
+CREATE DATABASE icingaweb2;
+&nbsp;GRANT ALL ON icingaweb2.* TO icingaweb2@localhost
+&nbsp;IDENTIFIED BY 'mdp';
+</pre>
+<p>Cr&eacute;ation du Token pour icingaweb2</p>
+<p>Le token est log&eacute;e dans /etc/icingaweb2/setup.token, et on le g&eacute;n&egrave;re avec :</p>
+<pre>icingacli setup token create
+ ---
+The newly generated setup token is: 136dac787f38acbe
+</pre>
+<p>On peut maintenant lancer la configuration d'icinga en ligne en ouvrant l'addresse de notre serveur Apache: http://10.144.37.20/icingaweb2/setup</p>
+<p>Il nous demande en premier lieu notre token (ici: "136dac787f38acbe")</p>
+<p>On s&eacute;lectionne que Monitorin, on se connecte avec le type : Database, on se connecte avec les donn&eacute;es qu'on connais d&eacute;j&agrave;, on ne touche pas au backend name, on cr&eacute;e le compte pour se connecter:</p>
+<pre>Username : mathieu
+Password : 1234
+Repeat password : 1234</pre>
+<p>On appuie sur next jusqu'&agrave; arriver &agrave; la configuration IDO.</p>
+<p>Une fois dans la config IDO on cherche les bonne informations dans le fichier /etc/icinga2/features-enabled/ido-mysql.conf</p>
+<pre>object IdoMysqlConnection "ido-mysql" {
+ user = "icinga2",
+ password = "mdpmysql",
+ host = "localhost",
+ database = "icinga2"
+}
+</pre>
+<p>Le transport des commande se fera en local Local Command File.</p>
+<p>Puis on a juste &agrave; appuyer sur next jusqu'&agrave; la fin.</p>
+<h3>3. Configuration d'Icinga</h3>
+<p>Pour ajouter un ordinateur &agrave; superviser il suffit de modifier le fichier /etc/icinga2/conf.d/hosts.conf et d'&eacute;crire pour chaque machine:</p>
+<pre>object Host "Nom_de_la_machine"{
+ address = "ip_de_la_machine"
+ check_command = "hostalive"
+}</pre>
+<p>Pour v&eacute;rifier si le service http est activ&eacute; ou non:</p>
+<pre>object Service "http"{
+ host_name = "Nom_de_la_machine"
+ check_command = "http"
+}</pre>
+<p>On finit par red&eacute;marr&eacute; icinga et v&eacute;rifier que nos machines se sont ajout&eacute;es.</p>
+<h2><strong>3.1.4.9 Linux &agrave; la maison</strong></h2>
+<h3>1. Cr&eacute;ation de la clef ssh</h3>
+<p>G&eacute;n&eacute;r&eacute; une clef de type RSA de 4092 bytes</p>
+<pre>ssh-keygen -t rsa -b 4092</pre>
+<p>Ensuite on envoie la clef publique dans le fichier .ssh/authorized_keys de la session thorin.</p>
+<pre>scp id_rsa.pub mathieu@thorin
+cat id_rsa.pub &gt;&gt; .ssh/authorized_keys</pre>
+<p>A partir de maintenant je peux me connecter &agrave; bifrost depuis n'importe ou en IPV6.</p>
+<h3>2. Transfert de ports</h3>
+<p>Mettons en place un transf&egrave;re de port en local pour pouvoir naviguer plus facilement sur le r&eacute;seau mis en place:</p>
+<p>dans le fichier .ssh/config:</p>
+<pre>host bifrost
+ user mathieu
+ adresse [IPv6 bifrost]
+ port 8163
+ localforward 8080 thorin:80
+ localforward 2222 thorin:22
+ localforward 3333 panama17:22
+ localforward 5937 thorin:5937
+ localforward 6137 thorin:6137
+ localforward 6237 thorin:6237
+</pre>
+<p>Dans un terminal, connectons nous &agrave; bifrost:</p>
+<pre>ssh bifrost</pre>
+<p>Ensuite &agrave; l'aide d'un autre terminal, je peux me connecter avec un transfert de port &agrave; une machine sur panama (ici panama17):</p>
+<pre>ssh -l mathieu -p 3333 localhost</pre>
+<h2><strong>3.1.4.10 SSH, transfert de ports, configuration</strong></h2>
+<h3>1. Connexion sans mot de passe vers le voisin</h3>
+<p>Je g&eacute;n&egrave;re une paire de clef ssh sur mon poste:</p>
+<pre>ssh-keygen -t rsa</pre>
+<p>Je l'envoie sur le poste du voisin en me connectant en ssh:</p>
+<pre>scp .ssh/id_rsa.pub stud@Dale:.
+ssh stud@Dale
+cat id_rsa.pub &gt;&gt; .ssh/authorized_keys</pre>
+<p>Maintenant je peux me connecter sans mot de passe au poste du voisin.</p>
+<h3>2. Se connecter au voisin avec un port local</h3>
+<p>M&ecirc;me concepte que la comp&eacute;tence pr&eacute;c&eacute;dente, on cr&eacute;&eacute; une redirection de port:</p>
+<pre>ssh stud@Dale -L 2222:thorin:22 </pre>
+<p>Nous pouvons maintenant nous connecter &agrave; thorin en utilisant le tunnel dans un autre terminal:</p>
+<pre>ssh -l mathieu -p 2222 localhost</pre>
+<h3>3. Ouvrir une machine thorin en VNC</h3>
+<p>M&ecirc;me &eacute;tape que pr&eacute;c&eacute;dement, seulement je rajoute une redirection pour un port VNC:</p>
+<pre>ssh -l mathieu -p 2222 localhost -L 5937:thorin:5937</pre>
+<p>On lance notre machine avec le port vnc correspondant (ici 37), et on se connecte avec vinagre dessus:</p>
+<pre>vinagre :37</pre>
+<h3>4. V&eacute;rification avec tshark</h3>
+<p>Voir les transactions du port VNC:</p>
+<pre>tshark -n -i lo -f "port 5910"</pre>
+<h1><strong><u>La T&eacute;l&eacute;phonie et les autres services num&eacute;riques</u></strong></h1>
+<h2><strong>3.2.1&emsp;Objectifs</strong></h2>
+<p>Le but du module consiste &agrave; &eacute;tudier les connexions entre la t&eacute;l&eacute;phonie et les r&eacute;seaux informatiques. Pour cela, nous allons utiliser l&rsquo;infrastructure mise en place dans le module Base des Services R&eacute;seaux.</p>
+<h2><strong>3.2.4.1 Asterisk sur Thorin</strong></h2>
+<h3>1. Installation d&rsquo;un Asterisk sur une machine virtuelle sur Thorin</h3>
+<p>Sur une machine vierge:</p>
+<pre>apt install asterisk</pre>
+<h3>2. Connexion ssh et vnc vers celle-ci</h3>
+<p>On lance la machine avec un port vnc:</p>
+<pre>kvm -m 2G -hda asterisk-mathieu.qcow2 -net nic,macadrr=42:37:37:37:37:1 -net vde,sock=/var/run/vde2/kvmstudPriv7037.ctl -vnc :137 -nographic</pre>
+<p>Et on s'y connecte avec vinagre:</p>
+<pre>vinagre thorin:137</pre>
+<h3>3. Connexion d&rsquo;un t&eacute;l&eacute;phone (logiciel ou mat&eacute;riel) dessus</h3>
+<p>On commence par ajouter dans le fichier /etc/asterisk/sip.conf ces lignes pour y rajouter notre softphone:</p>
+<pre>[softphone]
+type=friend
+secret=mdp
+host=dynamic
+context=default
+</pre>
+<p>Ensuite on ajoute ces lignes pour d&eacute;clarer le num&eacute;ro de notre softphone:</p>
+<pre>[default]
+exten =&gt; 701,1,Dial(SIP/softphone,42) #Le num&eacute;ro pour l'appeler est 701.
+</pre>
+<p>Pour appel&eacute; depuis la console asterisk il faut activer la librairie chan_oss.so en d&eacute;commentant la ligne suivante dans /etc/asterisk/modules.conf</p>
+<pre>load =&gt; chan_oss.so</pre>
+<p>On reload asterisk pour que nos changements prennent effet:</p>
+<pre>systemctl restart asterisk</pre>
+<p>On lance ensuite twinkle sur notre station et on cr&eacute;&eacute; notre utilisateur twinkle</p>
+<pre>twinkle
+-----
+Votre nom: softphone
+Nom d'utilisateur: softphone
+Domain: 10.144.37.10 &lt;- Adresse du serveur asterisk
+Nom d'authentification: softphone
+Mot de passe: mdp
+</pre>
+<p>On peut passer un appel sur le num&eacute;ro de notre softphone:</p>
+<pre>asterisk -rvvv
+ console dial 701
+</pre>
+<h3>4. logs asterisk.</h3>
+<p>On affiche les logs avec:</p>
+<pre>tail -f /var/log/asterisk/message</pre>
+<h2><strong>3.2.4.3 Softphones</strong></h2>
+<h3>1. Cr&eacute;er un fichier touch toto</h3>
+<pre>cd ~
+touch toto
+</pre>
+<h3>2. Configurer (m&ecirc;me de mani&egrave;re farfelue) un t&eacute;l&eacute;phone logiciel</h3>
+<p>On fait la m&ecirc;me chose qu'&agrave; la comp&eacute;tence 1 avec twinkle</p>
+<h3>3. Identifier les fichiers cr&eacute;&eacute;s ou modifi&eacute;s</h3>
+<pre>find . -newer toto</pre>
+<p>Nous pouvons apr&egrave;s r&eacute;cup&eacute;r&eacute; avec la commande <strong>cp</strong> les fichiers pour les sauvegarder dans un autre dossier, r&eacute;initialis&eacute; la configuration, regarder que la configuration est bien &agrave; l'&eacute;tat d'usine, refaire un <strong>cp</strong> pour remettre nos fichier que l'on a sauvegarder et regarder que la configuration remarche</p>
+<h2><strong>3.2.4.6 Visiophone</strong></h2>
+<p>Pour pouvoir &eacute;tablir un appel visiophonique il faut utiliser les t&eacute;l&eacute;phone GRANDSTREAM qui poss&egrave;de une cam&eacute;ra. Pour configurer les deux apareils, on se rend dans le fichier /etc/asterisk/sip.conf et on d&eacute;clare nos 2 hardphones :</p>
+<pre>[gs1]
+type=friend
+secret=mdp
+host=dynamic
+context=default
+allow=h264 #Codec pour la visio
+[gs2]
+type=friend
+secret=mdp
+host=dynamic
+context=default
+allow=h264
+</pre>
+<p>On se rend dans le fichier /etc/asterisk/extensions.conf et on rajoute :</p>
+<pre>exten =&gt; 701,1,Dial(SIP/gs1,33,rt)
+exten =&gt; 702,1,Dial(SIP/gs2,33,rt)
+</pre>
+<p>On se rend sur le site web de configuration &agrave; l'aide de l'ip du t&eacute;l&eacute;phone : Dans Account 1 :</p>
+<pre>Account Active : YES
+Account Name : gs1
+SIP Server : 10.144.10.20 ("ip asterisk")
+SIP User ID : gs1
+Authenticate ID : gs1
+Authenticate Password : mdp
+Voice Mail UserID :*26
+Name :
+Tel URI : Disable
+</pre>
+<p>On fais &ccedil;a &eacute;videmment pour les 2 t&eacute;l&eacute;phones. Dans Call settings :</p>
+<pre>Dial PLan Prefix : { 0 | 8xxxxxx | 98xxxxxx | *xx | 7xx}
+</pre>
+<p>On rajoute le 7xx pour qu'il accepte les num&eacute;ros qui commence par 7 et qui ont 3 num&eacute;ros. On confirme et c'est bon !</p>
+<h2><strong>3.2.4.8 Syslog et NTP</strong></h2>
+<h3>1. T&eacute;l&eacute;chargement de syslog et NPT:</h3>
+<pre>apt install rsyslog ntpd
+</pre>
+<p>On active syslog en d&eacute;commentant les lignes suivantes:</p>
+<pre>module(load=imudp)
+input(type=imudp port=514)
+---
+module(load=imtcp)
+input(type=imtcp port=514).
+</pre>
+<p>Sur les t&eacute;l&eacute;phones, on configure l'ip du serveur NTP et des logs avec l'IP de notre serveur Asterisk (ici 10.144.37.10)</p>
+<h3>2. Analyser le trafic</h3>
+<pre>tshark -i ens3 -f "port 123 and host 10.144.37.10"
+tshark -i ens3 -f "port 514"
+</pre>
+<h2><strong>3.2.4.9 IDE Arduino</strong></h2>
+<p>Programme pour faire varier le temps de clignotement de la LED int&eacute;gr&eacute;e lorsque l'on appuie sur le bouton int&eacute;gr&eacute;e d'une STM32 (<strong>PC13</strong> ici):</p>
+<pre>#define led LED_BUILTIN
+void setup(){
+ pinMode(led, OUTPUT);
+ pinMode(PC13, INPUT);
+}
+void loop(){
+ if (digitalRead(PC13) == 0){
+ digitalWrite(led, HIGH);
+ delay(1000);
+ digitalWrite(led, LOW);
+ delay(50);
+ } else {
+ digitalWrite(led, HIGH);
+ delay(50);
+ digitalWrite(led, LOW);
+ delay(1000);
+ }
+}
+</pre>
+<h2><strong>3.2.4.10 Micropython</strong></h2>
+<p>J'ai utiliser l'IDE Thonny pour pouvoir plus facilement manipuler le micropython et la liaison entre la carte et l'ordinateur.</p>
+<p>On ajoute le fichier <strong>ble_advertising.py</strong> sur les deux cartes donn&eacute;e sur la page [https://stm32python.gitlab.io/fr/docs/Micropython/Telechargement de documentation de la carte STM32] qui va nous servir de support pour les transactions.</p>
+<h3>Carte scanner</h3>
+<pre># Exemple de mise en oeuvre d'une NUCLEO-WB55 en mode scanner BLE &agrave; l'&eacute;coute de trames provenant
+# d'autres (deux dans notre exemple) cartes NUCLEO-WB55 en mode advertising.
+# Le scanner capture les trames d'advertising dont le nom commence par "Adv". Il affiche &eacute;galement les
+# donn&eacute;es de temp&eacute;rature et d'humidit&eacute; envoy&eacute;es sous forme de texte dans le nom des trames d'advertising.
+import bluetooth # Biblioth&egrave;que pour g&eacute;rer le BLE
+from time import sleep_ms # M&eacute;thode pour g&eacute;n&eacute;rer des temporisations en millisecondes
+from ble_advertising import decode_services, decode_name # M&eacute;thodes pour d&eacute;coder le contenu des trames d'advertising
+# Constantes utilis&eacute;es pour GAP (voir https://docs.micropython.org/en/latest/library/ubluetooth.html)
+_IRQ_SCAN_RESULT = const(5) # Le scan signale une trame d'advertising
+_IRQ_SCAN_DONE = const(6) # Le scan a pris fin
+# Notifications "advertising" des objets qui ne sont pas connectables
+_ADV_SCAN_IND = const(0x02)
+_ADV_NONCONN_IND = const(0x03)
+# Param&egrave;tres pour fixer le rapport cyclique du scan GAP
+_SCAN_DURATION_MS = const(1000)
+_SCAN_INTERVAL_US = const(10000)
+_SCAN_WINDOW_US = const(10000)
+# Classe pour cr&eacute;er un scanner BLE environnemental
+class BLE_Scan_Env:
+ # Initialisations
+ def __init__(self, ble):
+ self._ble = ble
+ self._ble.active(True)
+ self._ble.irq(self._irq)
+ self._reset()
+ # Effacement des donn&eacute;es en m&eacute;moire cache
+ def _reset(self):
+ # Noms et adresses mises en m&eacute;moire cache apr&egrave;s une &eacute;tape de scan des p&eacute;riph&eacute;riques
+ self._message = set()
+ # Callback du scan d'advertising
+ self._scan_callback = None
+ # Gestion des &eacute;v&egrave;nements
+ def _irq(self, event, data):
+ # Le scan des p&eacute;riph&eacute;riques a permis d'identifier au moins un advertiser
+ if event == _IRQ_SCAN_RESULT:
+ # Lecture du contenu de la trame d'advertising
+ addr_type, addr, adv_type, rssi, adv_data = data
+ # Si la trame d'advertising pr&eacute;cise que son &eacute;metteur n'est pas connectable
+ if adv_type in (_ADV_SCAN_IND, _ADV_NONCONN_IND):
+ # Le message est contenu dans le champ "name" de la trame d'advertising
+ smessage = decode_name(adv_data)
+ # Si le message commence par "Adv", enregistre le dans un "set"
+ # (pour &eacute;viter d'enregistrer plusieurs fois le m&ecirc;me message pendant le scan)
+ if smessage[0:3] == "Adv":
+ self._message.add(smessage)
+ # Lorsque le scan a pris fin (apr&egrave;s _SCAN_DURATION_MS)
+ elif event == _IRQ_SCAN_DONE:
+ if self._scan_callback: # Si un callback relatif &agrave; cet &eacute;v&egrave;nement a &eacute;t&eacute; assign&eacute;
+ if len(self._message) &gt; 0:
+ # Au moins un message a &eacute;t&eacute; enregistr&eacute; pendant le scan, appelle le callback pour afficher
+ self._scan_callback(self._message)
+ # D&eacute;sactive le callback
+ self._scan_callback = None
+ # Proc&egrave;de au scan
+ def scan(self, callback = None):
+ # Initialise (vide) le set qui va contenir les messages
+ self._message = set()
+ # Assigne le callback qui sera appel&eacute; en fin de scan
+ self._scan_callback = callback
+ # Scanne pendant _SCAN_DURATION_MS, pendant des dur&eacute;es de _SCAN_WINDOWS_US espac&eacute;es de _SCAN_INTERVAL_US
+ self._ble.gap_scan(_SCAN_DURATION_MS, _SCAN_INTERVAL_US, _SCAN_WINDOW_US)
+# Programme principal
+print("Hello, je suis Scanny 7037")
+# Instanciation du BLE
+ble = bluetooth.BLE()
+scanner = BLE_Scan_Env(ble)
+# Fonction "callback" appel&eacute;e &agrave; la fin du scan
+def on_scan(message):
+ # Pour chaque message d'advertising enregistr&eacute;
+ for payload in message:
+ print(message);
+while True:
+ # Lance le scan des trames d'advertising
+ scanner.scan(callback=on_scan)
+ # Temporisation de 10 secondes
+ sleep_ms(10000)
+</pre>
+<h3>Carte advertising</h3>
+<pre># Cet exemple montre comment programmer un advertiser BLE avec le standard Bluetooth SIG
+# pour publier des mesures de temp&eacute;rature et d'humidit&eacute; en mode advertising (GAP).
+# Les mesures sont simul&eacute;es avec un g&eacute;n&eacute;rateur de nombres al&eacute;atoires puis mises &agrave; jour
+# et publi&eacute;es toutes les cinq secondes par l'advertiser.
+import bluetooth # Biblioth&egrave;que pour la gestion du BLE
+import random # Biblioth&egrave;que pour la g&eacute;n&eacute;ration de valeurs al&eacute;atoires
+from time import sleep_ms # M&eacute;thode pour la gestion des temporisations en millisecondes
+from ble_advertising import adv_payload # M&eacute;thode pour construire des trames d'advertising
+# Identifiant de l'advertiser
+mon_nom = "Adv1"
+# Ic&ocirc;ne pour une trame GAP environnementale.
+# Voir org.bluetooth.characteristic.gap.appearance.xml
+_ADV_APPEARANCE_GENERIC_ENVSENSOR = const(5696)
+# Classe pour g&eacute;rer l'advertising de donn&eacute;es environnementales
+class BLE_Adv_Env:
+ # Initialisations
+ def __init__(self, ble):
+ self._ble = ble
+ self._ble.active(True)
+ self._connections = set()
+ self._handler = None
+ # Envoie des trames d'advertising toutes les 5 secondes, pr&eacute;cise que l'on ne pourra pas se connecter &agrave; l'advertiser
+ def advertise(self, interval_us=500000, message = None):
+ self._payload = adv_payload(name=message, services=None, appearance=_ADV_APPEARANCE_GENERIC_ENVSENSOR)
+ self._ble.gap_advertise(interval_us, adv_data=self._payload, connectable = False)
+# Programme principal
+print("Hello, je suis " + mon_nom)
+# Initialisations du BLE et du protocole GAP
+ble = bluetooth.BLE()
+ble_device = BLE_Adv_Env(ble)
+while True:
+ # Mesures (simul&eacute;es)
+ temperature = random.randint(-20, 90) # Valeur al&eacute;atoire entre -20 et 90 &deg;C
+ humidite = random.randint(0, 100) # Valeur al&eacute;atoire entre 0 et 100 %
+ stemperature = str(temperature)
+ shumidite = str(humidite)
+ # Publication en BLE de la temp&eacute;rature et de l'humidit&eacute;
+ ble_device.advertise(message = mon_nom + "| 7037")
+ # Temporisation de cinq secondes
+ sleep_ms(5000)
+</pre>
