@@ -1,8 +1,8 @@
 <h1><strong><u>Vid&eacute;o pr&eacute;sentation Osaka:</u></strong></h1>
-<p>Pour la r&eacute;alisation de la vid&eacute;o, nous avons d&eacute;cid&eacute; d'expliquer une notion que nous avons mis du temps &agrave; comprendre et que nous aurions voulu comprendre plustot qui est les redirections de port en local et plus particuli&egrave;rement sur Thorin.</p>
-<p>Dans la premi&egrave;re partie nous pr&eacute;senterons le fonctionnement de thorin en Panama s'en rentrez dans les d&eacute;tails, expliqu&eacute; aussi l'IPV6 sur Bifrost.</p>
-<p>Dans une seconde partie nous pr&eacute;senterons en d&eacute;tail le concept de redirection de port et qu'est-ce qui se passe r&eacute;ellement derri&egrave;re.</p>
-<p>En dernier, nous mettrons en route nos machines pour visualiser le fonctionnement de notre r&eacute;seau depuis chez nous.</p>
+<p>Pour la r&eacute;alisation de la vid&eacute;o, nous avons d&eacute;cid&eacute; d'expliquer une notion qui nous paraissaient difficilement compr&eacute;hensible&nbsp; et que nous aurions voulu comprendre plus t&ocirc;t qui est :<span style="text-decoration: underline;">Les redirections de port en local et plus particuli&egrave;rement sur Thorin.</span></p>
+<p>Dans la premi&egrave;re partie nous pr&eacute;senterons bri&egrave;vement le fonctionnement de thorin en Panama , de plus l'explication IPV6 sur Bifrost.</p>
+<p>Dans une seconde partie nous pr&eacute;senterons en d&eacute;tail,le concept de redirection de port et ce qui se passe r&eacute;ellement derri&egrave;re.</p>
+<p>Enfin, nous mettrons en route nos machines pour visualiser le fonctionnement de notre r&eacute;seau depuis chez nous.</p>
 <p>[https://www.youtube.com/watch?v=j6xCXg-ldo0 Vid&eacute;o Sur Youtube]</p>
 <ul>
 <li>Producteur: Hugo Mathieu</li>
@@ -13,9 +13,9 @@
 </ul>
 <p><u>Vid&eacute;o Libre de Diffusion</u></p>
 <h1><strong><u>Projet Int&eacute;gratif</u></strong></h1>
-<p>coming soon</p>
+<p>&nbsp;</p>
 <h1><strong><u>Connection Bifrost en IPV4:</u></strong></h1>
-<p>Bifrost demande une connexion en IPV6 obligatoire, l'activation de cette IP par notre op&eacute;rateur peut &ecirc;tre difficile et certains r&eacute;seaux (Crous par exemple ...) n'offre pas cette possibilit&eacute;.</p>
+<p>Bifrost demande une connexion en IPV6 obligatoire, l'activation de cette IP par notre op&eacute;rateur pouvant &ecirc;tre&nbsp; difficile et certains r&eacute;seaux (Crous par exemple ...) n'offre pas cette possibilit&eacute;.</p>
 <p>Pr&eacute;requis:</p>
 <ul>
 <li>Une rasberry avec un linux install&eacute; dans un r&eacute;seau avec IPV6</li>
@@ -29,7 +29,7 @@
 <pre>ssh &lt;user_thorin&gt;@localhost -p 2222</pre>
 <p>Dans un navigateur:</p>
 <pre>http://localhost:8080/mediawiki</pre>
-<p>Lancer une KVM:<br /></p>
+<p>Lancer une KVM:</p>
 <ul>
 <li>Installer realvnc</li>
 <li>Ajouter au path le dossier du programme</li>
@@ -39,16 +39,16 @@
 <pre>vncviewer localhost:6137 -&gt; (5900+237)</pre>
 <h1><strong><u>Base des Services R&eacute;seaux</u></strong></h1>
 <h2><strong>3.1.1&emsp;Objectifs</strong></h2>
-<p>Le but du module consiste &agrave; mettre en place un petit r&eacute;seau d&rsquo;entreprise. Pour cela un fournisseur d&rsquo;acc&egrave;s fournit une plage de 255 adresses IP, un acc&egrave;s internet. L&rsquo;&eacute;tudiant doit mettre en place&nbsp;:</p>
+<p>Le but de ce&nbsp; module consiste &agrave; mettre en place un petit r&eacute;seau d&rsquo;entreprise. Pour cela un fournisseur d&rsquo;acc&egrave;s fournit une plage de 255 adresses IP, un acc&egrave;s internet. L&rsquo;&eacute;tudiant doit mettre en place :</p>
 <ul>
 <li>Une machine virtuelle, serveur DHCP</li>
 <li>Au moins une autre machine virtuelle, serveur wordpress</li>
 <li>Un serveur DNS</li>
-<li>le partage de fichiers entre deux machines (NFS, sshfs, samba, webdav)</li>
+<li>Le partage de fichiers entre deux machines (NFS, sshfs, samba, webdav)</li>
 <li>Sauvegarde, restauration</li>
 <li>Supervision</li>
 </ul>
-<p>Ce r&eacute;seau sera utilis&eacute; dans le module de t&eacute;l&eacute;phonie pour mettre en place le serveur de t&eacute;l&eacute;phonie.</p>
+<p>Ce r&eacute;seau sera utilis&eacute; dans le module de t&eacute;l&eacute;phonie afin de mettre en place le serveur de t&eacute;l&eacute;phonie.</p>
 <h2><strong>3.1.4.1 Connexion Thorin, identification des param&egrave;tres</strong></h2>
 <h3>1. connexion sans mot de passe vers Thorin </h3>
 <pre>ssh-keygen
@@ -72,13 +72,13 @@ xlogo</pre>
 <p>kvm -m 2G -hda debian-Hugo-Mathieu.qcow2 -net nic,macaddr=42:24:42:24:42:24 -net vde,sock=/var/run/vde2/kvmstud7037.ctl -vnc :37 -nographic vinagre thorin:37</p>
 <h2><strong>3.1.4.2 Router sur Thorin</strong></h2>
 <h3>1. Installation d'un serveur sur Thorin</h3>
-<p>V&eacute;rification de l'architecture de thorin: </p>
+<p>V&eacute;rification de l'architecture de thorin:</p>
 <pre>dpkg --print-architecture -&gt; Amd64</pre>
-<p>T&eacute;l&eacute;chargement de l'image debian: </p>
+<p>T&eacute;l&eacute;chargement de l'image debian:</p>
 <pre>wget https://ftp.crifo.org/debian-cd/11.3.0/amd64/iso-cd/debian-11.3.0-amd64-netinst.iso</pre>
-<p>Cr&eacute;ation du disque: </p>
+<p>Cr&eacute;ation du disque:</p>
 <pre>qemu-img create -f qcow2 router-mathieu.qcow2 15G</pre>
-<p>Premier lancement pour installation: </p>
+<p>Premier lancement pour installation:</p>
 <pre>kvm -m 2G -hda router-mathieu.qcow2 -cdrom iso/debian-11.3.0-amd64-netinst.iso </pre>
 <h3>2. Utilisation de deux interfaces r&eacute;seaux</h3>
 <p>Lancement du routeur avec deux interfaces r&eacute;seaux:</p>
@@ -98,7 +98,7 @@ xlogo</pre>
 allow-hotplug ens4
  iface ens4 inet static
  address 10.144.37.2/24</pre>
-<p>Puis afin de permettre a nos futurs ping du r&eacute;seau interne de sortir de notre r&eacute;seau on fait:</p>
+<p>Puis afin de permettre &agrave; nos futurs ping du r&eacute;seau interne de sortir de notre r&eacute;seau on effectue:</p>
 <pre>sudo sysctl -w net.ipv4.ip_forward=1</pre>
 <h3>5. Avec tshark, pouver que le r&eacute;seau priv&eacute; est accessible</h3>
 <p>On fait un ping sur le r&eacute;seau priv&eacute;:</p>
@@ -113,11 +113,11 @@ allow-hotplug ens4
 <pre>kpartx -av router-mathieu.raw</pre>
 <pre>mount /dev/mapper/loop0p1 /tmpmount</pre>
 <p>La machine est maintenant disponible dans /tmpmount.</p>
-<p>Effectu&eacute; l'inverse:</p>
+<p>Effectuer l'inverse:</p>
 <pre>umount /tmpmount</pre>
 <pre>qemu-img convert -O qcow2 router-mathieu.qcow2 router-mathieu.raw</pre>
 <h2><strong>3.1.4.3 Apache, Asterisk</strong></h2>
-<p>On cr&eacute;er une VM pour le serveur Apache et une VM pour le serveur Asterisk. Ces deux VM n'ont que la carte r&eacute;seau kvmstudPriv7037 puisqu'elle se trouve dans le r&eacute;seau priv&eacute;.</p>
+<p>On cr&eacute;er une VM pour le serveur Apache et une VM pour le serveur Asterisk. Ces deux VM n'on que la carte r&eacute;seau kvmstudPriv7037 puisqu'elle se trouve dans le r&eacute;seau priv&eacute;.</p>
 <h3>1. On install dnsmasq:</h3>
 <pre>sudo apt install dnsmasq</pre>
 <h3>2. Configuration DHCP:</h3>
@@ -140,11 +140,11 @@ allow-hotplug ens4
 <p>telnet sur la machine d'Osaka vers notre serveur apache sur le port http:</p>
 <pre>telnet 10.144.37.20 80</pre>
 <h3>Ev&eacute;nement dans un fichier de logs:</h3>
-<p>Afficher le contenue du fichier sur le serveur apache:</p>
+<p>Afficher le contenu du fichier sur le serveur apache:</p>
 <pre>less /var/log/syslog </pre>
 <p>On peut cr&eacute;er un &eacute;v&eacute;nement en redemandant une IP &agrave; notre routeur:</p>
 <pre>dhclient</pre>
-<p>Et reafficher le fichier de logs pour voir les nouvelles entr&eacute;es.</p>
+<p>Et re afficher le fichier de logs pour voir les nouvelles entr&eacute;es.</p>
 <h3>Nmap et SS</h3>
 <p>Observer les ports TCP ouverts de notre serveur apache sur le routeur:</p>
 <pre>nmap -sT 10.144.37.20</pre>
@@ -155,7 +155,7 @@ allow-hotplug ens4
 <pre>mysql_secure_installation</pre>
 <p>Commen&ccedil;ons par installer les paquets n&eacute;cessaire:</p>
 <pre>apt install icinga2n libapache2-mod-php icinga2-ido-mysql phpmyadmin icingaweb2</pre>
-<p>L'installation de icinga2-ido-mysql et phpmyadmin demande d'enregistr&eacute; un mot de passe, ici '1234' pour l'environnement de test, en condition r&eacute;el il est pr&eacute;f&eacute;rable de mettre un mot de passe fort.</p>
+<p>L'installation de icinga2-ido-mysql et phpmyadmin demande d'enregistr&eacute; un mot de passe, ici '1234' pour l'environnement de test, en condition r&eacute;el il est pr&eacute;f&eacute;rable de mettre un mot de passe plus s&eacute;curis&eacute; .</p>
 <p>On active ensuite ido-mysql:</p>
 <pre>icinga2 feature enable ido-mysql</pre>
 <p>On red&eacute;marre le service icinga2 comme conseilli&eacute; par la commande pr&eacute;c&eacute;dente:</p>
@@ -174,14 +174,14 @@ CREATE DATABASE icingaweb2;
 &nbsp;IDENTIFIED BY 'mdp';
 </pre>
 <p>Cr&eacute;ation du Token pour icingaweb2</p>
-<p>Le token est log&eacute;e dans /etc/icingaweb2/setup.token, et on le g&eacute;n&egrave;re avec :</p>
+<p>Le token est log&eacute; dans /etc/icingaweb2/setup.token, et on le g&eacute;n&egrave;re avec :</p>
 <pre>icingacli setup token create
  ---
 The newly generated setup token is: 136dac787f38acbe
 </pre>
 <p>On peut maintenant lancer la configuration d'icinga en ligne en ouvrant l'addresse de notre serveur Apache: http://10.144.37.20/icingaweb2/setup</p>
 <p>Il nous demande en premier lieu notre token (ici: "136dac787f38acbe")</p>
-<p>On s&eacute;lectionne que Monitorin, on se connecte avec le type : Database, on se connecte avec les donn&eacute;es qu'on connais d&eacute;j&agrave;, on ne touche pas au backend name, on cr&eacute;e le compte pour se connecter:</p>
+<p>On s&eacute;lectionne que Monitorin puis on se connecte avec le type : Database. On se connecte avec les donn&eacute;es que l'on&nbsp; connais d&eacute;j&agrave; en ne touchant pas au backend name et on cr&eacute;e le compte pour se connecter:</p>
 <pre>Username : mathieu
 Password : 1234
 Repeat password : 1234</pre>
@@ -194,8 +194,8 @@ Repeat password : 1234</pre>
  database = "icinga2"
 }
 </pre>
-<p>Le transport des commande se fera en local Local Command File.</p>
-<p>Puis on a juste &agrave; appuyer sur next jusqu'&agrave; la fin.</p>
+<p>Le transport des commandes se fera en local Local Command File.</p>
+<p>Puis il faut juste &agrave; appuyer sur next jusqu'&agrave; la fin.</p>
 <h3>3. Configuration d'Icinga</h3>
 <p>Pour ajouter un ordinateur &agrave; superviser il suffit de modifier le fichier /etc/icinga2/conf.d/hosts.conf et d'&eacute;crire pour chaque machine:</p>
 <pre>object Host "Nom_de_la_machine"{
@@ -210,7 +210,7 @@ Repeat password : 1234</pre>
 <p>On finit par red&eacute;marr&eacute; icinga et v&eacute;rifier que nos machines se sont ajout&eacute;es.</p>
 <h2><strong>3.1.4.9 Linux &agrave; la maison</strong></h2>
 <h3>1. Cr&eacute;ation de la clef ssh</h3>
-<p>G&eacute;n&eacute;r&eacute; une clef de type RSA de 4092 bytes</p>
+<p>G&eacute;n&eacute;rer une clef de type RSA de 4092 bytes</p>
 <pre>ssh-keygen -t rsa -b 4092</pre>
 <p>Ensuite on envoie la clef publique dans le fichier .ssh/authorized_keys de la session thorin.</p>
 <pre>scp id_rsa.pub mathieu@thorin
@@ -244,12 +244,12 @@ ssh stud@Dale
 cat id_rsa.pub &gt;&gt; .ssh/authorized_keys</pre>
 <p>Maintenant je peux me connecter sans mot de passe au poste du voisin.</p>
 <h3>2. Se connecter au voisin avec un port local</h3>
-<p>M&ecirc;me concepte que la comp&eacute;tence pr&eacute;c&eacute;dente, on cr&eacute;&eacute; une redirection de port:</p>
+<p>M&ecirc;me processus que la comp&eacute;tence pr&eacute;c&eacute;dente, on cr&eacute;e une redirection de port:</p>
 <pre>ssh stud@Dale -L 2222:thorin:22 </pre>
 <p>Nous pouvons maintenant nous connecter &agrave; thorin en utilisant le tunnel dans un autre terminal:</p>
 <pre>ssh -l mathieu -p 2222 localhost</pre>
 <h3>3. Ouvrir une machine thorin en VNC</h3>
-<p>M&ecirc;me &eacute;tape que pr&eacute;c&eacute;dement, seulement je rajoute une redirection pour un port VNC:</p>
+<p>M&ecirc;me &eacute;tape que la pr&eacute;c&eacute;dente, seulement je rajoute une redirection pour un port VNC:</p>
 <pre>ssh -l mathieu -p 2222 localhost -L 5937:thorin:5937</pre>
 <p>On lance notre machine avec le port vnc correspondant (ici 37), et on se connecte avec vinagre dessus:</p>
 <pre>vinagre :37</pre>
@@ -309,7 +309,7 @@ touch toto
 <p>On fait la m&ecirc;me chose qu'&agrave; la comp&eacute;tence 1 avec twinkle</p>
 <h3>3. Identifier les fichiers cr&eacute;&eacute;s ou modifi&eacute;s</h3>
 <pre>find . -newer toto</pre>
-<p>Nous pouvons apr&egrave;s r&eacute;cup&eacute;r&eacute; avec la commande <strong>cp</strong> les fichiers pour les sauvegarder dans un autre dossier, r&eacute;initialis&eacute; la configuration, regarder que la configuration est bien &agrave; l'&eacute;tat d'usine, refaire un <strong>cp</strong> pour remettre nos fichier que l'on a sauvegarder et regarder que la configuration remarche</p>
+<p>Nous pouvons apr&egrave;s,r&eacute;cup&eacute;rer avec la commande <strong>cp</strong> les fichiers pour les sauvegarder dans un autre dossier et r&eacute;initialis&eacute; la configuration. De plus v&eacute;rifier&nbsp; que la configuration est bien &agrave; l'&eacute;tat d'usine, refaire un <strong>cp</strong> pour remettre nos fichier que l'on a sauvegard&eacute; et v&eacute;rifier que la configuration remarche.</p>
 <h2><strong>3.2.4.6 Visiophone</strong></h2>
 <p>Pour pouvoir &eacute;tablir un appel visiophonique il faut utiliser les t&eacute;l&eacute;phone GRANDSTREAM qui poss&egrave;de une cam&eacute;ra. Pour configurer les deux apareils, on se rend dans le fichier /etc/asterisk/sip.conf et on d&eacute;clare nos 2 hardphones :</p>
 <pre>[gs1]
@@ -340,10 +340,10 @@ Voice Mail UserID :*26
 Name :
 Tel URI : Disable
 </pre>
-<p>On fais &ccedil;a &eacute;videmment pour les 2 t&eacute;l&eacute;phones. Dans Call settings :</p>
+<p>On fais evidemment &ccedil;a pour les 2 t&eacute;l&eacute;phones. Dans Call settings :</p>
 <pre>Dial PLan Prefix : { 0 | 8xxxxxx | 98xxxxxx | *xx | 7xx}
 </pre>
-<p>On rajoute le 7xx pour qu'il accepte les num&eacute;ros qui commence par 7 et qui ont 3 num&eacute;ros. On confirme et c'est bon !</p>
+<p>On rajoute le 7xx pour qu'il accepte les num&eacute;ros qui commence par 7 et qui ont 3 num&eacute;ros. On confirme et c'est valid&eacute;.</p>
 <h2><strong>3.2.4.8 Syslog et NTP</strong></h2>
 <h3>1. T&eacute;l&eacute;chargement de syslog et NPT:</h3>
 <pre>apt install rsyslog ntpd
@@ -361,7 +361,7 @@ input(type=imtcp port=514).
 tshark -i ens3 -f "port 514"
 </pre>
 <h2><strong>3.2.4.9 IDE Arduino</strong></h2>
-<p>Programme pour faire varier le temps de clignotement de la LED int&eacute;gr&eacute;e lorsque l'on appuie sur le bouton int&eacute;gr&eacute;e d'une STM32 (<strong>PC13</strong> ici):</p>
+<p>Programme pour faire varier le temps de clignotement de la LED int&eacute;gr&eacute;e lorsque l'on appuie sur le bouton int&eacute;gr&eacute; d'une STM32 (<strong>PC13</strong> ici):</p>
 <pre>#define led LED_BUILTIN
 void setup(){
  pinMode(led, OUTPUT);
@@ -382,7 +382,7 @@ void loop(){
 }
 </pre>
 <h2><strong>3.2.4.10 Micropython</strong></h2>
-<p>J'ai utiliser l'IDE Thonny pour pouvoir plus facilement manipuler le micropython et la liaison entre la carte et l'ordinateur.</p>
+<p>J'ai utilis&eacute; l'IDE Thonny pour pouvoir plus facilement manipuler le micropython et la liaison entre la carte et l'ordinateur.</p>
 <p>On ajoute le fichier <strong>ble_advertising.py</strong> sur les deux cartes donn&eacute;e sur la page [https://stm32python.gitlab.io/fr/docs/Micropython/Telechargement de documentation de la carte STM32] qui va nous servir de support pour les transactions.</p>
 <h3>Carte scanner</h3>
 <pre># Exemple de mise en oeuvre d'une NUCLEO-WB55 en mode scanner BLE &agrave; l'&eacute;coute de trames provenant
@@ -503,4 +503,4 @@ while True:
  ble_device.advertise(message = mon_nom + "| 7037")
  # Temporisation de cinq secondes
  sleep_ms(5000)
-</pre>
+ </pre>
